@@ -6,13 +6,22 @@ export enum GenerationStep {
   COMPLETE = 'COMPLETE',
 }
 
+// Augmented Global Window for AI Studio environment
+declare global {
+  // We extend the AIStudio interface which is expected by the existing Window.aistudio declaration
+  interface AIStudio {
+    hasSelectedApiKey: () => Promise<boolean>;
+    openSelectKey: () => Promise<void>;
+  }
+}
+
 export interface NLPAnalysis {
   productName: string;
   features: string[];
   targetAudience: string;
   cta: string;
   marketingMood: string;
-  suggestedAudioRatio: string;
+  suggestedAudioRatio: string; // e.g., "TTS: 100%, Music: 30%, SFX: 10%"
 }
 
 export interface StoryboardScene {

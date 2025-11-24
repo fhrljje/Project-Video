@@ -11,17 +11,24 @@ const getClient = () => {
 export const analyzeMarketingText = async (text: string): Promise<NLPAnalysis> => {
   const ai = getClient();
   
+  // ARCHITECT NOTE: PART 1 - NLP LOGIC
+  // Logic to extract 4 Key Entities: Product, Features, Target, CTA
+  // Logic to determine Marketing Mood and strict Audio Ratio
   const prompt = `
-    You are a Senior Marketing AI Analyst. Parse the following promotional text into structured entities.
-    Text: "${text}"
+    Act as a Senior Marketing AI Architect. Parse the following promotional text into a structured MVP technical plan.
+    Input Text: "${text}"
     
-    Return JSON with:
-    - productName
-    - features (array of strings)
-    - targetAudience
-    - cta (Call to Action)
-    - marketingMood (one word adjective)
-    - suggestedAudioRatio (e.g., "TTS: 100%, Music: 30%, SFX: 10%")
+    Extraction Rules:
+    1. PRODUCT: Identify the main item/service.
+    2. FEATURES: Extract specific attributes (e.g., "rasa coklat").
+    3. TARGET_SITUATION: Identify the context/audience (e.g., "sarapan cepat").
+    4. CTA_INCENTIVE: Identify the action and deal (e.g., "beli sekarang diskon 20%").
+    
+    Analysis Rules:
+    - Determine 'marketingMood' based on keywords (e.g., 'Promo' -> 'Urgent', 'Health' -> 'Calm').
+    - Set 'suggestedAudioRatio' STRICTLY to "TTS: 100%, Music: 30%, SFX: 10%" as per technical standard.
+
+    Return JSON.
   `;
 
   const response = await ai.models.generateContent({
@@ -50,22 +57,31 @@ export const analyzeMarketingText = async (text: string): Promise<NLPAnalysis> =
 export const generateStoryboard = async (analysis: NLPAnalysis, brandColor: string): Promise<StoryboardScene[]> => {
   const ai = getClient();
 
+  // ARCHITECT NOTE: PART 2 - STORYBOARD LOGIC
+  // Fixed 25s duration, 4 scenes, specific visual instruction injection.
   const prompt = `
-    Create a strictly structured 4-scene video storyboard for a 25-second promotional video.
-    Product: ${analysis.productName}
-    Features: ${analysis.features.join(', ')}
-    Target: ${analysis.targetAudience}
-    Brand Color Hex: ${brandColor}
+    Create a strict 4-scene storyboard for a 25-second promotional video (MVP Standard).
+    
+    Context:
+    - Product: ${analysis.productName}
+    - Features: ${analysis.features.join(', ')}
+    - Target: ${analysis.targetAudience}
+    - Mood: ${analysis.marketingMood}
+    - Brand Color: ${brandColor}
 
-    Structure:
-    1. HOOK (Capture attention, problem statement)
-    2. SOLUTION (Introduce product)
-    3. BENEFIT (Key advantages)
-    4. CTA (Call to action)
+    Structure (Must sum to approx 25s):
+    1. HOOK (Approx 5s): Visualizing the problem/need (${analysis.targetAudience}).
+    2. SOLUTION (Approx 7s): Introducing ${analysis.productName} clearly.
+    3. BENEFIT (Approx 8s): Visual proof of features (${analysis.features}).
+    4. CTA (Approx 5s): Final driver for '${analysis.cta}'.
 
-    Visual Rules:
-    - If text implies "Discount" or "Sale", visually suggest a "Red Flash overlay" or dynamic text.
-    - Ensure visual descriptions are highly detailed for video generation models.
+    Visual Instruction Logic (Automated Rules):
+    - IF text implies "Discount", "Sale", "Promo" -> Visual Prompt MUST include "flashing red overlay" or "dynamic pop-up text".
+    - IF mood is "Calm" -> Visual Prompt MUST include "soft lighting, slow cinematic pan".
+    - IF mood is "Urgent" -> Visual Prompt MUST include "fast cuts, bright saturation".
+    - ALWAYS mention the Brand Color (${brandColor}) in the visual elements (e.g., props, background, or lighting).
+
+    Return JSON Array.
   `;
 
   const response = await ai.models.generateContent({
@@ -125,7 +141,8 @@ export const generateScenePreview = async (scenePrompt: string): Promise<string>
 export const generateVeoVideo = async (prompt: string): Promise<string> => {
   const ai = getClient();
 
-  // Using Veo fast for MVP speed
+  // ARCHITECT NOTE: PART 1 - VISUAL CORE
+  // Using Veo (Diffusion) as recommended for superior consistency over GANs.
   let operation = await ai.models.generateVideos({
     model: 'veo-3.1-fast-generate-preview',
     prompt: prompt,

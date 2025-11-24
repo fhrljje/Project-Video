@@ -8,6 +8,7 @@ interface InputStepProps {
 }
 
 export const InputStep: React.FC<InputStepProps> = ({ onAnalyze, isAnalyzing }) => {
+  // Using the exact example from the user's prompt
   const [text, setText] = useState("Jual kopi robusta dengan rasa coklat, untuk sarapan cepat, beli sekarang diskon 20%.");
   const [primaryColor, setPrimaryColor] = useState("#8b5cf6"); // Default violet
   const [logoName, setLogoName] = useState<string | null>(null);
