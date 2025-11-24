@@ -1,0 +1,5 @@
+{
+  "name": "PromoGen AI - MVP",
+  "description": "A Text-to-Video generator specifically designed for marketing promotional videos using Gemini and Veo models.",
+  "requestFramePermissions": []
+}
